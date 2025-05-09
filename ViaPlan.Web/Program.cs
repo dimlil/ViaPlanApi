@@ -1,3 +1,5 @@
+using ViaPlan.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<ViaPlanContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ViaPlanDb")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
