@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ViaPlan.Data\ViaPlan.Data.csproj" />
+    <ProjectReference Include="..\ViaPlan.Services\ViaPlan.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ViaPlan.Data;
+using ViaPlan.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ViaPlanContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ViaPlanDb")));
+
+builder.Services.AddScoped<TripServices>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
