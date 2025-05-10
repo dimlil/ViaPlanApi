@@ -22,6 +22,27 @@ namespace ViaPlan.Services
             _configuration = configuration;
         }
 
+        public async Task<ServiceResult<string>> RegisterUserAsync(RegisterDTO registerDto)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
+                return ServiceResult<string>.Failure("Username already exists");
+
+            var user = new User
+            {
+                Email = registerDto.Email,
+                Username = registerDto.Username,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+                Role = "User"
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            // return ServiceResult<string>.SuccessResult("User registered successfully");
+            var token = GenerateJwtToken(user);
+            return ServiceResult<string>.SuccessResult(token);
+        }
+
         private string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -30,10 +51,10 @@ namespace ViaPlan.Services
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],

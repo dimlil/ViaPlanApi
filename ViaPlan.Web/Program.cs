@@ -24,6 +24,7 @@ builder.Services.AddDbContext<ViaPlanContext>(options => {
 });
 
 builder.Services.AddScoped<TripServices>();
+builder.Services.AddScoped<AuthServices>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
