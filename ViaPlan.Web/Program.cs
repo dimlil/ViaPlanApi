@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ViaPlan.Data;
 using ViaPlan.Services;
+using ViaPlan.Services.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddDbContext<ViaPlanContext>(options => {
 });
 
 builder.Services.AddScoped<TripServices>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
