@@ -73,4 +73,23 @@ public class TripServices
         }
 
     }
+    public async Task<ServiceResult<TripDTO>> UpdateTripAsync(int id, CreateTripDTO tripDTO)
+    {
+        try
+        {
+            var trip = await _context.Trips.FindAsync(id);
+            if (trip == null)
+            {
+                return new ServiceResult<TripDTO> { Success = false, ErrorMessage = "Trip not found." };
+            }
+
+            _mapper.Map(tripDTO, trip);
+            await _context.SaveChangesAsync();
+            return new ServiceResult<TripDTO> { Success = true, Data = _mapper.Map<TripDTO>(trip) };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResult<TripDTO> { Success = false, ErrorMessage = ex.Message };
+        }
+    }
 }

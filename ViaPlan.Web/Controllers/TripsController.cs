@@ -75,5 +75,23 @@ namespace ViaPlan.Web.Controllers
 
             return Ok(result.Data);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTrip(int id, [FromBody] CreateTripDTO tripDto)
+        {
+            if (tripDto == null)
+            {
+                return BadRequest("Trip data is required.");
+            }
+
+            var result = await _tripServices.UpdateTripAsync(id, tripDto);
+
+            if (!result.Success)
+            {
+                _logger.LogError("TripService error: {Message}", result.ErrorMessage);
+                return StatusCode(500, result.ErrorMessage);
+            }
+
+            return Ok(result.Data);
+        }
     }
 }
