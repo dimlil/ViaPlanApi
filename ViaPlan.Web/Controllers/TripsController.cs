@@ -57,6 +57,7 @@ namespace ViaPlan.Web.Controllers
 
             return Ok(result.Data);
         }
+        
         [HttpPost]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripDTO tripDto)
         {
@@ -75,6 +76,7 @@ namespace ViaPlan.Web.Controllers
 
             return Ok(result.Data);
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTrip(int id, [FromBody] CreateTripDTO tripDto)
         {
@@ -84,6 +86,20 @@ namespace ViaPlan.Web.Controllers
             }
 
             var result = await _tripServices.UpdateTripAsync(id, tripDto);
+
+            if (!result.Success)
+            {
+                _logger.LogError("TripService error: {Message}", result.ErrorMessage);
+                return StatusCode(500, result.ErrorMessage);
+            }
+
+            return Ok(result.Data);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTrip(int id)
+        {
+            var result = await _tripServices.DeleteTripAsync(id);
 
             if (!result.Success)
             {

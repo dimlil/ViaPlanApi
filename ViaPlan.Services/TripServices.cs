@@ -92,4 +92,24 @@ public class TripServices
             return new ServiceResult<TripDTO> { Success = false, ErrorMessage = ex.Message };
         }
     }
+
+    public async Task<ServiceResult<bool>> DeleteTripAsync(int id)
+    {
+        try
+        {
+            var trip = await _context.Trips.FindAsync(id);
+            if (trip == null)
+            {
+                return new ServiceResult<bool> { Success = false, ErrorMessage = "Trip not found." };
+            }
+
+            _context.Trips.Remove(trip);
+            await _context.SaveChangesAsync();
+            return new ServiceResult<bool> { Success = true, Data = true };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResult<bool> { Success = false, ErrorMessage = ex.Message };
+        }
+    }
 }
