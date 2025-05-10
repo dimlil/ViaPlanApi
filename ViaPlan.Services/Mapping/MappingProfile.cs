@@ -9,7 +9,10 @@ namespace ViaPlan.Services.Mapping
        public MappingProfile()
         {
             CreateMap<Trip, TripDTO>().ReverseMap();
-            CreateMap<User, UserDTO>();
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Trip, CreateTripDTO>()
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ReverseMap();
         }
     }
 }

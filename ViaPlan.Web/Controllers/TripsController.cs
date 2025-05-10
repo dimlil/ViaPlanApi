@@ -38,7 +38,7 @@ namespace ViaPlan.Web.Controllers
 
             return Ok(result.Data);
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTrip(int id)
         {
@@ -53,6 +53,24 @@ namespace ViaPlan.Web.Controllers
             if (result.Data == null)
             {
                 return NotFound("Trip not found.");
+            }
+
+            return Ok(result.Data);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateTrip([FromBody] CreateTripDTO tripDto)
+        {
+            if (tripDto == null)
+            {
+                return BadRequest("Trip data is required.");
+            }
+
+            var result = await _tripServices.CreateTripAsync(tripDto);
+
+            if (!result.Success)
+            {
+                _logger.LogError("TripService error: {Message}", result.ErrorMessage);
+                return StatusCode(500, result.ErrorMessage);
             }
 
             return Ok(result.Data);

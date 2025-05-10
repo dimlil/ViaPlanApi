@@ -53,4 +53,24 @@ public class TripServices
         }
     }
 
+    public async Task<ServiceResult<TripDTO>> CreateTripAsync(CreateTripDTO createTripDTO)
+    {
+        try
+        {
+            var trip = _mapper.Map<Trip>(createTripDTO);
+            trip.User = await _context.Users.Where(u => u.Id == createTripDTO.UserId).FirstOrDefaultAsync();
+
+            if (trip.User == null)
+                return ServiceResult<TripDTO>.Failure("User not found");
+
+            await _context.Trips.AddAsync(trip);
+            await _context.SaveChangesAsync();
+            return new ServiceResult<TripDTO> { Success = true, Data = _mapper.Map<TripDTO>(trip) };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResult<TripDTO> { Success = false, ErrorMessage = ex.Message };
+        }
+
+    }
 }
