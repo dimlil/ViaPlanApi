@@ -43,6 +43,16 @@ namespace ViaPlan.Services
             return ServiceResult<string>.SuccessResult(token);
         }
 
+        public async Task<ServiceResult<string>> LoginAsync(LoginDTO loginDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+                return ServiceResult<string>.Failure("Invalid username or password");
+
+            var token = GenerateJwtToken(user);
+            return ServiceResult<string>.SuccessResult(token);
+        }
+
         private string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");

@@ -21,5 +21,11 @@ namespace ViaPlan.Web.Controllers
             var result = await _authService.RegisterUserAsync(dto);
             return result.Success ? Ok(result.Data) : BadRequest(result.ErrorMessage);
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
+        {
+            var result = await _authService.LoginAsync(dto);
+            return result.Success ? Ok(result.Data) : BadRequest(result.ErrorMessage);
+        }
     }
 }
