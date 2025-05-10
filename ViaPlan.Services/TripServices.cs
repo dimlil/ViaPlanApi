@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ViaPlan.Data;
+using ViaPlan.Entities;
 using ViaPlan.Services.Common;
 using ViaPlan.Services.DTO;
 
@@ -30,4 +31,26 @@ public class TripServices
             return new ServiceResult<List<TripDTO>> { Success = false, ErrorMessage = ex.Message };
         }
     }
+
+    public async Task<ServiceResult<TripDTO>> GetTripByIdAsync(int id)
+    {
+        try
+        {
+            var trip = await _context.Trips
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (trip == null)
+            {
+                return new ServiceResult<TripDTO> { Success = false, ErrorMessage = "Trip not found." };
+            }
+
+            return new ServiceResult<TripDTO> { Success = true, Data = _mapper.Map<TripDTO>(trip) };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResult<TripDTO> { Success = false, ErrorMessage = ex.Message };
+        }
+    }
+
 }

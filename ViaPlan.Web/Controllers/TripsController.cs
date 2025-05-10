@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViaPlan.Services;
 using ViaPlan.Services.Common;
+using ViaPlan.Services.DTO;
 
 namespace ViaPlan.Web.Controllers
 {
@@ -33,6 +34,25 @@ namespace ViaPlan.Web.Controllers
             if (result.Data == null || !result.Data.Any())
             {
                 return NotFound("No trips found.");
+            }
+
+            return Ok(result.Data);
+        }
+        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTrip(int id)
+        {
+            var result = await _tripServices.GetTripByIdAsync(id);
+
+            if (!result.Success)
+            {
+                _logger.LogError("TripService error: {Message}", result.ErrorMessage);
+                return StatusCode(500, result.ErrorMessage);
+            }
+
+            if (result.Data == null)
+            {
+                return NotFound("Trip not found.");
             }
 
             return Ok(result.Data);
