@@ -9,8 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ViaPlanContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ViaPlanDb")));
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<ViaPlanContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddScoped<TripServices>();
 
@@ -24,6 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();
