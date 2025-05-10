@@ -8,6 +8,6 @@ namespace ViaPlan.Services.DTO
         public DateTime EndDate { get; set; }
         public string? WeatherSummary { get; set; }
         public string? HotelRecommendation { get; set; }    
-         public List<int> Users { get; set; }
+         public UserDTO? User { get; set; }
     }
 }

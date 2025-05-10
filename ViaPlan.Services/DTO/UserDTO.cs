@@ -1,6 +1,6 @@
 namespace ViaPlan.Services.DTO
 {
-    public class UsersDTO
+    public class UserDTO
     {
         public int Id { get; set; }
         public string? Email { get; set; }
