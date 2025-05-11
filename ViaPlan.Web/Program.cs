@@ -7,6 +7,7 @@ using ViaPlan.Data;
 using ViaPlan.Services;
 using ViaPlan.Services.Mapping;
 using dotenv.net;
+using ViaPlan.Services.External.WeatherApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ builder.Services.AddDbContext<ViaPlanContext>(options => {
 
 builder.Services.AddScoped<TripServices>();
 builder.Services.AddScoped<AuthServices>();
+builder.Services.AddScoped<OpenWeatherServices>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
