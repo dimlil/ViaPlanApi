@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViaPlan.Services;
@@ -57,7 +58,8 @@ namespace ViaPlan.Web.Controllers
 
             return Ok(result.Data);
         }
-        
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripDTO tripDto)
         {
@@ -77,6 +79,7 @@ namespace ViaPlan.Web.Controllers
             return Ok(result.Data);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTrip(int id, [FromBody] CreateTripDTO tripDto)
         {
@@ -95,7 +98,8 @@ namespace ViaPlan.Web.Controllers
 
             return Ok(result.Data);
         }
-
+        
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrip(int id)
         {
