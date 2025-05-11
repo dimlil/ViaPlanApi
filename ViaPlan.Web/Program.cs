@@ -6,8 +6,13 @@ using Microsoft.OpenApi.Models;
 using ViaPlan.Data;
 using ViaPlan.Services;
 using ViaPlan.Services.Mapping;
+using dotenv.net;
 
 var builder = WebApplication.CreateBuilder(args);
+
+DotEnv.Load();
+var envVars = DotEnv.Read();
+var openWeatherApiKey = envVars["OPENWEATHER_API_KEY"];
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
