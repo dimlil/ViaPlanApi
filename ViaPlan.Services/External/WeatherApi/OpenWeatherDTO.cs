@@ -2,13 +2,13 @@ namespace ViaPlan.Services.External.WeatherApi
 {
     public class OpenWeatherGetLocationDTO
     {
-        public string lat { get; set; }
-        public string lon { get; set; }
+        public double lat { get; set; }
+        public double lon { get; set; }
     }
     public class OpenWeatherDTO
     {
-        public int lon { get; set; }
-        public int lat { get; set; }
+        public double lon { get; set; }
+        public double lat { get; set; }
         public Daily[] daily { get; set; }
         public class Weather
         {
