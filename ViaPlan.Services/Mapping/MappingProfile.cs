@@ -12,6 +12,7 @@ namespace ViaPlan.Services.Mapping
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Trip, CreateTripDTO>()
                 .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.WeatherSummary, opt => opt.Ignore())
                 .ReverseMap();
         }
     }

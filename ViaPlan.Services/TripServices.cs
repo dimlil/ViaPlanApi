@@ -66,7 +66,10 @@ public class TripServices
             if (trip.User == null)
                 return ServiceResult<TripDTO>.Failure("User not found");
 
-            var res = await _openWeatherServices.GetLocationAsync(trip.Destination);
+            var getLatAndLonResult = await _openWeatherServices.GetLocationAsync(trip.Destination);
+            var getSummaryResult = await _openWeatherServices.GetWeatherDataAsync(getLatAndLonResult.lat, getLatAndLonResult.lon);
+
+            trip.WeatherSummary = getSummaryResult.daily.FirstOrDefault()?.weather.FirstOrDefault()?.description;
 
             await _context.Trips.AddAsync(trip);
             await _context.SaveChangesAsync();
@@ -78,7 +81,7 @@ public class TripServices
         }
 
     }
-    
+
     public async Task<ServiceResult<TripDTO>> UpdateTripAsync(int id, CreateTripDTO tripDTO)
     {
         try

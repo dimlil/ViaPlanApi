@@ -27,7 +27,7 @@ namespace ViaPlan.Services.External.WeatherApi
                 throw new Exception("Failed to fetch location data");
             }
         }
-        public async Task<OpenWeatherDTO> GetWeatherDataAsync(string lat, string lon)
+        public async Task<OpenWeatherDTO> GetWeatherDataAsync(double lat, double lon)
         {
             var response = await _httpClient.GetAsync($"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&units=metric&lang=bg&appid={_openWeatherApiKey}");
             if (response.IsSuccessStatusCode)
