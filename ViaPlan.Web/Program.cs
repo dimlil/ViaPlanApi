@@ -57,7 +57,17 @@ builder.Services.AddDbContext<ViaPlanContext>(options => {
 
 builder.Services.AddScoped<TripServices>();
 builder.Services.AddScoped<AuthServices>();
-builder.Services.AddScoped<OpenWeatherServices>();
+builder.Services.AddHttpClient<OpenWeatherServices>(client =>
+{
+    // (по избор) можеш да сетнеш базовия URL тук
+    client.BaseAddress = new Uri("https://api.openweathermap.org/");
+});
+builder.Services.AddScoped(serviceProvider =>
+{
+    var envVars = DotEnv.Read(); // вече си го заредил горе
+    var httpClient = serviceProvider.GetRequiredService<HttpClient>();
+    return new OpenWeatherServices(httpClient, envVars["OPENWEATHER_API_KEY"]);
+});
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

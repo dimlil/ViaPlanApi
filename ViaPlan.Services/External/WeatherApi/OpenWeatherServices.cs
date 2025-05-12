@@ -7,7 +7,7 @@ namespace ViaPlan.Services.External.WeatherApi
     {
         private readonly HttpClient _httpClient;
         private readonly string _openWeatherApiKey;
-        
+
         public OpenWeatherServices(HttpClient httpClient, string openWeatherApiKey)
         {
             _httpClient = httpClient;
@@ -19,7 +19,8 @@ namespace ViaPlan.Services.External.WeatherApi
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<OpenWeatherGetLocationDTO>(content);
+                var locations = JsonConvert.DeserializeObject<List<OpenWeatherGetLocationDTO>>(content);
+                return locations?.FirstOrDefault() ?? throw new Exception("Location not found");
             }
             else
             {

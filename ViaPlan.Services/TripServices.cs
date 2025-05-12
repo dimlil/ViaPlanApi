@@ -4,6 +4,7 @@ using ViaPlan.Data;
 using ViaPlan.Entities;
 using ViaPlan.Services.Common;
 using ViaPlan.Services.DTO;
+using ViaPlan.Services.External.WeatherApi;
 
 namespace ViaPlan.Services;
 
@@ -11,10 +12,12 @@ public class TripServices
 {
     private readonly ViaPlanContext _context;
     private readonly IMapper _mapper;
-    public TripServices(ViaPlanContext context, IMapper mapper)
+    private readonly OpenWeatherServices _openWeatherServices;
+    public TripServices(ViaPlanContext context, IMapper mapper, OpenWeatherServices openWeatherServices)
     {
         _context = context;
         _mapper = mapper;
+        _openWeatherServices = openWeatherServices;
     }
 
     public async Task<ServiceResult<List<TripDTO>>> GetAllTripsAsync()
@@ -63,6 +66,8 @@ public class TripServices
             if (trip.User == null)
                 return ServiceResult<TripDTO>.Failure("User not found");
 
+            var res = await _openWeatherServices.GetLocationAsync(trip.Destination);
+
             await _context.Trips.AddAsync(trip);
             await _context.SaveChangesAsync();
             return new ServiceResult<TripDTO> { Success = true, Data = _mapper.Map<TripDTO>(trip) };
@@ -73,6 +78,7 @@ public class TripServices
         }
 
     }
+    
     public async Task<ServiceResult<TripDTO>> UpdateTripAsync(int id, CreateTripDTO tripDTO)
     {
         try
