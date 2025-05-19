@@ -37,7 +37,7 @@ namespace ViaPlan.Services.External.WeatherApi
             }
             else
             {
-                throw new Exception("Failed to fetch weather data");
+                throw new Exception("Failed to fetch weather data. Error: " + response.ToString());
             }
         }
     }

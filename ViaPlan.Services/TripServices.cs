@@ -4,6 +4,7 @@ using ViaPlan.Data;
 using ViaPlan.Entities;
 using ViaPlan.Services.Common;
 using ViaPlan.Services.DTO;
+using ViaPlan.Services.External.HotelApi;
 using ViaPlan.Services.External.WeatherApi;
 
 namespace ViaPlan.Services;
@@ -13,11 +14,13 @@ public class TripServices
     private readonly ViaPlanContext _context;
     private readonly IMapper _mapper;
     private readonly OpenWeatherServices _openWeatherServices;
-    public TripServices(ViaPlanContext context, IMapper mapper, OpenWeatherServices openWeatherServices)
+    private readonly HotelService _hotelService;
+    public TripServices(ViaPlanContext context, IMapper mapper, OpenWeatherServices openWeatherServices, HotelService hotelService)
     {
         _context = context;
         _mapper = mapper;
         _openWeatherServices = openWeatherServices;
+        _hotelService = hotelService;
     }
 
     public async Task<ServiceResult<List<TripDTO>>> GetAllTripsAsync()
@@ -70,6 +73,10 @@ public class TripServices
             var getSummaryResult = await _openWeatherServices.GetWeatherDataAsync(getLatAndLonResult.lat, getLatAndLonResult.lon);
 
             trip.WeatherSummary = getSummaryResult.daily.FirstOrDefault()?.weather.FirstOrDefault()?.description;
+
+            var hotel = await _hotelService.GetHotelAsync(getLatAndLonResult.lat, getLatAndLonResult.lon);
+
+            trip.HotelRecommendation = hotel?.display_name;
 
             await _context.Trips.AddAsync(trip);
             await _context.SaveChangesAsync();
