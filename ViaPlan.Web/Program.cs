@@ -8,6 +8,7 @@ using ViaPlan.Services;
 using ViaPlan.Services.Mapping;
 using dotenv.net;
 using ViaPlan.Services.External.WeatherApi;
+using ViaPlan.Services.External.HotelApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,16 +58,28 @@ builder.Services.AddDbContext<ViaPlanContext>(options => {
 
 builder.Services.AddScoped<TripServices>();
 builder.Services.AddScoped<AuthServices>();
+
 builder.Services.AddHttpClient<OpenWeatherServices>(client =>
 {
-    // (по избор) можеш да сетнеш базовия URL тук
     client.BaseAddress = new Uri("https://api.openweathermap.org/");
 });
 builder.Services.AddScoped(serviceProvider =>
 {
-    var envVars = DotEnv.Read(); // вече си го заредил горе
+    var envVars = DotEnv.Read(); 
     var httpClient = serviceProvider.GetRequiredService<HttpClient>();
     return new OpenWeatherServices(httpClient, envVars["OPENWEATHER_API_KEY"]);
+});
+
+builder.Services.AddHttpClient<HotelService>(client =>
+{
+    client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("ViaPlanApp/1.0 d.v.vassilev@abv.bg");
+});
+
+builder.Services.AddScoped(serviceProvider =>
+{
+    var httpClient = serviceProvider.GetRequiredService<HttpClient>();
+    return new HotelService(httpClient);
 });
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
